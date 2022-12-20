@@ -211,7 +211,7 @@ class ApiUsersCommandController extends AbstractController implements ApiUsersCo
 
         // Optimistic Locking (strong validation)
         $etag = md5((string) json_encode($user, JSON_THROW_ON_ERROR) . $user->getPassword());
-        if (!$request->headers->has('If-Match') || $etag != $request->headers->get('If-Match')) {
+        if (!$request->headers->has('If-Match') && $etag != $request->headers->get('If-Match')) {
             return Utils::errorMessage(
                 Response::HTTP_PRECONDITION_FAILED,
                 'PRECONDITION FAILED: one or more conditions given evaluated to false',
