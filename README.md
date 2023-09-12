@@ -1,134 +1,81 @@
-![img](https://avatars1.githubusercontent.com/u/5365410?s=75) Usuarios y Resultados REST API
+![img](https://avatars1.githubusercontent.com/u/5365410?s=75) Users and Results REST API
 ======================================
 
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%5E8.1-blue.svg)](http://php.net/)
 [![PHPUnit Tests](https://github.com/FJavierGil/miw-api-usuarios/actions/workflows/php.yml/badge.svg)](https://github.com/FJavierGil/miw-api-usuarios/actions/workflows/php.yml)
-> 🎯 Implementación de una API REST con el framework Symfony para la gestión de usuarios y resultados.
+> 🎯 Implementation of a REST API using the Symfony framework for managing users and results.
 
-Esta aplicación implementa una interfaz de programación [REST][rest] desarrollada como ejemplo de
-utilización del framework [Symfony][symfony]. La aplicación proporciona las operaciones
-habituales para la gestión de entidades (usuarios y resultados). Este proyecto
-utiliza varios componentes del framework Symfony, [JWT][jwt] (JSON Web Tokens), el _logger_ [Monolog][monolog]
-y el [ORM Doctrine][doctrine].
+This application implements a [REST][rest] API developed as an example of using the [Symfony][symfony] framework. The application provides common operations for managing entities (users and results). This project uses various components of the Symfony framework, [JWT][jwt] (JSON Web Tokens), the [Monolog][monolog] logger, and the [Doctrine ORM][doctrine].
 
-Para hacer más sencilla la gestión de los datos se ha utilizado
-el ORM [Doctrine][doctrine]. Doctrine 2 es un Object-Relational Mapper que proporciona
-persistencia transparente para objetos PHP. Utiliza el patrón [Data Mapper][dataMapper]
-con el objetivo de obtener un desacoplamiento completo entre la lógica de negocio y la
-persistencia de los datos en los sistemas de gestión de bases de datos.
+To simplify data management, the [Doctrine][doctrine] ORM has been used. Doctrine 2 is an Object-Relational Mapper that provides transparent persistence for PHP objects. It uses the [Data Mapper][dataMapper] pattern to achieve complete decoupling between business logic and data persistence in database management systems.
 
-Por otra parte se incluye parcialmente la especificación de la API (OpenAPI 3.0) . Esta
-especificación se ha elaborado empleando el editor [Swagger][swagger]. Adicionalmente se
-incluye la interfaz de usuario (SwaggerUI) de esta fenomenal herramienta que permite
-realizar pruebas interactivas de manera completa y elegante.
+Additionally, a partial API specification (OpenAPI 3.0) is included. This specification was created using the [Swagger][swagger] editor. Furthermore, the user interface (SwaggerUI) of this fantastic tool is included, allowing for interactive testing in a complete and elegant manner.
 
+## 🚀 Installation of the Application
 
-## 🚀 Instalación de la aplicación
+The first step is to create an empty database schema and a user/password with full privileges for that schema.
 
-El primer paso consiste en generar un esquema de base de datos vacío y un usuario/contraseña
-con privilegios completos sobre dicho esquema.
+Next, you should create a copy of the `./.env` file and rename it to `./.env.local`. Then, edit this file and modify the `DATABASE_URL` variable with the following parameters:
 
-A continuación se deberá crear una copia del fichero `./.env` y renombrarla
-como `./.env.local`. Después se debe editar dicho fichero y modificar la variable `DATABASE_URL`
-con los siguientes parámetros:
+- Username and password of the user generated earlier.
+- Name of the database schema.
 
-* Nombre y contraseña del usuario generado anteriormente
-* Nombre del esquema de bases de datos
+Once you've edited the file, run the following commands from the root directory of the project:
 
-Una vez editado el anterior fichero y desde el directorio raíz del proyecto se deben ejecutar los comandos:
-```
+```shell
 $ composer update
 $ php bin/console doctrine:schema:update --dump-sql --force
-```
-El proyecto base entregado incluye el componente [lexik/jwt-authentication-bundle][lexik] para
-la generación de los tókens JWT. Siguiendo las instrucciones indicadas en la [documentación][1] de
-dicho componente se deberán generar las claves SSH necesarias con los comandos:
+
+The base project provided includes the [lexik/jwt-authentication-bundle][lexik] component for generating JWT tokens. Following the instructions provided in the [documentation][1] of this component, you should generate the necessary SSH keys with the following commands:
 ```
 $ mkdir -p config/jwt
 $ openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
 $ openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout
 ```
-En la instalación de XAMPP el programa *openssl* se encuentra en el directorio `XAMPP/apache/bin`. El
-resto de la configuración ya se ha realizado en este proyecto. Como *pass phrase* se empleará la
-especificada en la variable `JWT_PASSPHRASE` en el fichero `.env`.
+In XAMPP installation, the openssl program can be found in the XAMPP/apache/bin directory. The rest of the configuration has already been done in this project. Use the passphrase specified in the JWT_PASSPHRASE variable in the .env file.
 
-Para lanzar el servidor con la aplicación en desarrollo, desde la raíz del proyecto
-se debe ejecutar el comando: 
-```
+To launch the development server with the application, run the following command from the project's root directory:
 $ symfony serve [-d]
 ```
-Antes de probar la interfaz de la API es recomendable crear al menos un usuario con permisos de administrador.
-Para conseguir este objetivo se ha proporcionado un comando disponible a través de la consola
-de Symfony. La descripción del funcionamiento de este comando puede obtenerse con:
-```
+Before testing the API interface, it is recommended to create at least one user with administrator permissions. To achieve this, a command is provided through the Symfony console. You can get the description of how this command works with:
 $ php bin/console miw:create-user --help
 ```
-A continuación ya se puede realizar una petición con el navegador a la dirección [https://127.0.0.1:8000/][lh]
+You can now make a request with your browser to the address https://127.0.0.1:8000/.
 
-## 🗄️ Estructura del proyecto:
+🗄️ Project Structure:
+The content and structure of the project are as follows:
 
-El contenido y estructura del proyecto es:
+Root directory of the project .:
+.env: Default local environment variables.
+phpunit.xml.dist: Default configuration for the test suite.
+README.md: This file.
+bin directory:
+Executables (console and phpunit).
+src directory:
+Contains the source code of the application.
+Subdirectory src/Entity: PHP entities (includes ORM mapping annotations).
+var directory:
+Log and cache files (separated by environments).
+public directory:
+index.php is the front controller of the application. It initializes and launches the core of the application.
+Subdirectory api-docs: [Swagger][swagger] client and API specification.
+vendor directory:
+Components developed by third parties (Symfony, Doctrine, JWT, Monolog, Dotenv, etc.).
+tests directory:
+A set of scripts for running unit and integration tests with PHPUnit.
+🛠️ Running Tests
+The application includes a set of tools for running unit and integration tests with PHPUnit. Using these tools, you can automatically verify the correct functionality of the entire API without the need for additional tools.
 
-* Directorio raíz del proyecto `.`:
-    - `.env`: variables de entorno locales por defecto
-    - `phpunit.xml.dist` configuración por defecto de la suite de pruebas
-    - `README.md`: este fichero
-* Directorio `bin`:
-    - Ejecutables (*console* y *phpunit*)
-* Directorio `src`:
-    - Contiene el código fuente de la aplicación
-    - Subdirectorio `src/Entity`: entidades PHP (incluyen anotaciones de mapeo del ORM)
-* Directorio `var`:
-    - Ficheros de log y caché (diferenciando entornos).
-* Directorio `public`:
-    - `index.php` es el controlador frontal de la aplicación. Inicializa y lanza 
-      el núcleo de la aplicación.
-    - Subdirectorio `api-docs`: cliente [Swagger][swagger] y especificación de la API.
-* Directorio `vendor`:
-    - Componentes desarrollados por terceros (Symfony, Doctrine, JWT, Monolog, Dotenv, etc.)
-* Directorio `tests`:
-    - Conjunto de scripts para la ejecución de test con PHPUnit.
+To set up the testing environment, create an empty database schema and make a copy of the ./phpunit.xml.dist file, renaming it to ./phpunit.xml. Similarly, create a copy of the ./.env.test file and rename it to ./.env.test.local. Then, edit this file to assign the following parameters:
 
-## 🛠️ Ejecución de pruebas
+Additionally, to check the quality of the tests, the project includes mutation tests generated using the Infection tool. The process is simple: small changes are made to the original code (mutants), and then the test suite is executed. If the tests fail, it means they were able to detect the code modification, and the mutant is eliminated. If the tests pass, the mutant survives, and the reliability of the test is questioned.
 
-La aplicación incorpora un conjunto de herramientas para la ejecución de pruebas 
-unitarias y de integración con [PHPUnit][phpunit]. Empleando este conjunto de herramientas
-es posible comprobar de manera automática el correcto funcionamiento de la API completa
-sin la necesidad de herramientas adicionales.
-
-Para configurar el entorno de pruebas se debe crear un nuevo esquema de bases de datos vacío,
-y una copia del fichero `./phpunit.xml.dist` y renombrarla como `./phpunit.xml`. De igual
-forma se deberá crear una copia del fichero `./.env.test` y renombrarla como
-`./.env.test.local`. Después se debe editar este último fichero para asignar los
-siguientes parámetros:
-                                                                            
-* Configuración del acceso a la nueva base de datos (variable `DATABASE_URL`)
-* E-mail y contraseña de los usuarios que se van a emplear para realizar las pruebas (no
-es necesario insertarlos, lo hace automáticamente el método `setUpBeforeClass()`
-de la clase `BaseTestCase`)
-
-Para lanzar la suite de pruebas completa se debe ejecutar:
-```
-$ ./bin/phpunit [--testdox] [--coverage-text]
-```
-Adicionalmente, para comprobar la calidad de las pruebas, el proyecto incluye test de mutaciones
-generados con la herramienta [Infection][infection].
-El funcionamiento es simple: se generan pequeños cambios en el código original (_mutantes_), y a continuación
-se ejecuta la batería de pruebas. Si las pruebas fallan, indica que han sido capaces de detectar la modificación
-del código, y el mutante es eliminado. Si pasa las pruebas, el mutante sobrevive y la fiabilidad de la prueba
-queda cuestionada.
-
-Para lanzar los test de mutaciones se ejecutará:
-```
+To run mutation tests, execute:
 > composer infection
 ```
 
-Por último, también se han añadido dos herramientas para el análisis estático de código, 
-[PHPStan][phpstan] y [PhpMetrics][phpmetrics]. PhpStan es una herramienta de análisis estático de código, mientras que
-PhpMetrics analiza el código y permite generar informes con diferentes métricas de proyecto.
-Estas herramientas pueden ejecutarse a través de los comandos:
-```
+Finally, two tools for static code analysis, [PHPStan][phpstan] and [PhpMetrics][phpmetrics], have been added. PhpStan is a static code analysis tool, while PhpMetrics analyzes the code and allows you to generate reports with various project metrics. These tools can be run using the following commands:
 > composer phpstan
 > composer metrics
 ```
